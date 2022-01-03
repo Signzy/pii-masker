@@ -1,0 +1,9 @@
+{
+	"jobs": [{
+		"jobName": "Tmp directory writer",
+		"files": {
+			"input": "/home/yuyudhan/code/central/pii-sanitizer/tmp/input-file.txt",
+			"output": "/home/yuyudhan/code/central/pii-sanitizer/tmp/output-file.txt"
+		}
+	}]
+}

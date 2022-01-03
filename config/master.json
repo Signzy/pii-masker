@@ -1,0 +1,8 @@
+{
+	"beatInterval": 5000,
+	"jobRefreshInterval": 300,
+	"tmpDirectory": "/tmp",
+	"alreadyRunningStatusHandleFile": "/tmp",
+	"runMode": "debug",
+	"_help_runMode": "verbose/error/noLog"
+ }

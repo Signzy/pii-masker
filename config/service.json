@@ -1,5 +1,0 @@
-{
-	"jobRefreshInterval": 60,
-	"runMode": "debug",
-	"_help_runMode": "verbose/error/noLog"
- }

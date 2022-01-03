@@ -51,3 +51,13 @@ Should have a marker, on the entry time of the log and the entry time in the fil
 #### Other points to be evaluated
 
 Should we provide a method to enable/ disable restful APIs for registering additional details.
+
+The system should be able to keep somewhere till what line number has the system already processed, so upon the re-registration of the system, we can pick from where we left and not the starting.
+
+
+
+The reason for creating this as a streamer over files and not as an extension to logger framework is so that it can be reused for other log systems like Nginx, where the request body could be getting logged in.
+
+
+Still thought to be given to the below points;
+Applies to basically filters the rules to be applied, for example the rule type of Nginx and NodeJS logs may be different. "appliesTo": [""] can be used, but we need to think if this is of much value add and adds to the system's speed ?

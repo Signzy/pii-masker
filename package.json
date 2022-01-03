@@ -1,0 +1,21 @@
+{
+  "name": "pii-sanitizer",
+  "version": "0.0.1",
+  "description": "Purpose is to clear an input file stream from the PII data and write to another file",
+  "main": "index.js",
+  "dependencies": {
+    "logat": "^1.0.11",
+    "readline": "^1.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/signzycode/pii-masker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/signzycode/pii-masker#readme"
+}
