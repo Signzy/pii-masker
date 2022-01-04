@@ -25,4 +25,7 @@ logat.debug(userRules, defaultRules);
 const allRules = userRules.concat(defaultRules);
 
 // Running the job at the defined interval
-setInterval(jobsRunner.run(allRules, allJobs, masterConfig), masterConfig.beatInterval);
+logat.debug(`Starting running the job every ${masterConfig.beatInterval} milli-seconds`, );
+setInterval(() => {
+	jobsRunner.run(allRules, allJobs, masterConfig);
+}, masterConfig.beatInterval);

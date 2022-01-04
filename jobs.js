@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const readline = require("readline");
 
 var getHashedPathName = function(input) {
-	return crypto.createHash('sha1').update(input).digest('base64');
+	return crypto.createHash('md5').update(input).digest('hex');
 };
 
 var sanitizeLine = function(line, allRules) {
@@ -14,7 +14,16 @@ var sanitizeLine = function(line, allRules) {
 	return line;
 };
 
-var runSanitizerForInputAndOutputPaths = function(inputPath, startLine, outputPath, allRules) {
+var runSanitizerForInputAndOutputPaths = function(inputPath, outputPath, allRules, masterConfig) {
+	logat.debug("Starting for path", inputPath);
+
+	var hashOfInputFilePath = getHashedPathName(inputPath); // creating hash for making it unique
+	var fileThatContainsLinesProcessed = masterConfig.tmpDirectory + "/" + hashOfInputFilePath;
+	utils.createFileIfNotExists(fileThatContainsLinesProcessed, "0");
+	// logat.debug("utils.getFileContentUTF8(fileThatContainsLinesProcessed)", utils.getFileContentUTF8(fileThatContainsLinesProcessed));
+	var currentLineNumber = parseInt(utils.getFileContentUTF8(fileThatContainsLinesProcessed));
+
+	logat.debug("Starting from line number", currentLineNumber, fileThatContainsLinesProcessed);
 
 	utils.createFileIfNotExists(outputPath);
 
@@ -27,24 +36,32 @@ var runSanitizerForInputAndOutputPaths = function(inputPath, startLine, outputPa
 
 	var outputStream = fs.createWriteStream(outputPath, {
 		flags: 'a' // 'a' means appending (old data will be preserved)
-	})
+	});
+
+	// var lineNumberFileStream = fs.createWriteStream(fileThatContainsLinesProcessed, {});
+
+	var inputFileLineNumber = 0;
 
 	rl.on('line', (line) => {
-			outputStream.write(sanitizeLine(line, allRules) + "\n");
+			inputFileLineNumber++;
+			if (inputFileLineNumber > currentLineNumber) {
+				currentLineNumber++;
+				outputStream.write(sanitizeLine(line, allRules) + "\n");
+				// lineNumberFileStream.write(currentLineNumber.toString());
+				fs.writeFileSync(fileThatContainsLinesProcessed, currentLineNumber.toString());
+			}
+
 		})
 		.on('close', () => {
-			fs.writeFileSync(masterConfig.tmpDirectory);
+			outputStream.end();
+			// lineNumberFileStream.end();
+			logat.debug("Completed whatever was there for this file", inputPath);
 		});
 };
 
 var initiateThisJob = function(thisJob, allRules, masterConfig) {
-	var hashedFileName = getHashedPathName(thisJob.files.input);
-	var tmpFileName = masterConfig.tmpDirectory + "/" + hashedFileName;
-	utils.createFileIfNotExists(tmpFileName, "0");
 
-	var startLine = parseInt(utils.getFileContentUTF8(tmpFileName));
-
-	runSanitizerForInputAndOutputPaths(thisJob.files.input, startLine, thisJob.files.output, allRules, masterConfig);
+	runSanitizerForInputAndOutputPaths(thisJob.files.input, thisJob.files.output, allRules, masterConfig);
 
 };
 
@@ -59,6 +76,7 @@ var initiateTheJobs = function(allRules, allJobs, masterConfig) {
 		initiateThisJob(allJobs[i], allRules, masterConfig)
 	}
 
+	return true;
 };
 
 module.exports = {};
