@@ -19,6 +19,8 @@ This system should be able to register the jobs. One job is one input file to be
 The user can configure multiple jobs into this system.
 
 The job definition can look like the below.
+
+```
 {
     "jobName": "",
     files: {
@@ -26,10 +28,25 @@ The job definition can look like the below.
         "output": "<absolute path to where the output file>",
     }
 }
+```
 
 System would create a read stream on the input file and the write (append) stream on the output file.
 
 The input would be read line by line and parsed at a target speed of 200 lines per second.
+
+### Rules
+
+A rule is configured in this manner.
+
+```
+[{
+    "type": "regex",
+    "definition": "[A-Z]{5}[0-9]{4}[A-Z]{1}",
+    "nameForThisRule": "PAN rule"
+}]
+```
+
+Note the redaction Rule parameter, basically it will redact all characters except the first 3 and last 2.
 
 ### Configurable parameters
 - How many characters to leave unmasked (default 4)
@@ -45,19 +62,17 @@ Service should be able to run very fast, so that the number of lines that it can
 
 Should have a marker, on the entry time of the log and the entry time in the filtered stream.
 
-
-
-
 #### Other points to be evaluated
 
 Should we provide a method to enable/ disable restful APIs for registering additional details.
 
 The system should be able to keep somewhere till what line number has the system already processed, so upon the re-registration of the system, we can pick from where we left and not the starting.
 
-
-
 The reason for creating this as a streamer over files and not as an extension to logger framework is so that it can be reused for other log systems like Nginx, where the request body could be getting logged in.
 
+# Notes
+
+- In case of conflicting rules the first one to appear shall be applied. In case of conflict between default rules and the user rules, the default rules take precedence and hence they'll override anything coming later.
 
 Still thought to be given to the below points;
 Applies to basically filters the rules to be applied, for example the rule type of Nginx and NodeJS logs may be different. "appliesTo": [""] can be used, but we need to think if this is of much value add and adds to the system's speed ?

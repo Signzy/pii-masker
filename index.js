@@ -22,7 +22,7 @@ const allJobs = JSON.parse(utils.getFileContentUTF8("./config/jobs.json")).jobs;
 const userRules = JSON.parse(utils.getFileContentUTF8("./config/rules-user.json"));
 const defaultRules = JSON.parse(utils.getFileContentUTF8("./config/rules-default.json"));
 logat.debug(userRules, defaultRules);
-const allRules = userRules.concat(defaultRules);
+const allRules = defaultRules.concat(userRules);
 
 // Running the job at the defined interval
 logat.debug(`Starting running the job every ${masterConfig.beatInterval} milli-seconds`, );

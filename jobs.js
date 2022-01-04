@@ -9,54 +9,87 @@ var getHashedPathName = function(input) {
 };
 
 var sanitizeLine = function(line, allRules) {
-	// Here try to understand what kind of rule it is.
-	// If it is a regular expression, handle it like a regular expression update.
+	for (var i = 0; i < allRules.length; i++) {
+		var thisRule = allRules[i];
+		var thisRuleType = thisRule.type;
+		if (thisRule.type == "regex") {
+			line = line.split(new RegExp(thisRule.definition)).join(`...XXX ${thisRule.name} XXX...`)
+		} else {
+			// Do nothing
+		}
+	}
 	return line;
 };
 
 var runSanitizerForInputAndOutputPaths = function(inputPath, outputPath, allRules, masterConfig) {
-	logat.debug("Starting for path", inputPath);
 
 	var hashOfInputFilePath = getHashedPathName(inputPath); // creating hash for making it unique
-	var fileThatContainsLinesProcessed = masterConfig.tmpDirectory + "/" + hashOfInputFilePath;
+	var fileThatContainsRunningStatus = masterConfig.tmpDirectory + "/" + hashOfInputFilePath + ".running";
+	var fileThatContainsLinesProcessed = masterConfig.tmpDirectory + "/" + hashOfInputFilePath + ".linenumber";
+
+	utils.createFileIfNotExists(fileThatContainsRunningStatus, "0");
 	utils.createFileIfNotExists(fileThatContainsLinesProcessed, "0");
-	// logat.debug("utils.getFileContentUTF8(fileThatContainsLinesProcessed)", utils.getFileContentUTF8(fileThatContainsLinesProcessed));
 	var currentLineNumber = parseInt(utils.getFileContentUTF8(fileThatContainsLinesProcessed));
+	var originalStartingLineNumber = currentLineNumber;
 
-	logat.debug("Starting from line number", currentLineNumber, fileThatContainsLinesProcessed);
+	logat.debug(`currentLineNumber = ${currentLineNumber}, originalStartingLineNumber = ${originalStartingLineNumber}`)
+	// logat.debug(utils.getFileContentUTF8(fileThatContainsLinesProcessed));
+	var isItRunning = parseInt(utils.getFileContentUTF8(fileThatContainsRunningStatus));
 
-	utils.createFileIfNotExists(outputPath);
+	logat.debug("is it already running", isItRunning);
+	logat.debug("Starting for path", inputPath);
+	logat.debug("Startin from line number", currentLineNumber, "stored at", fileThatContainsLinesProcessed);
 
-	const inputFileStream = fs.createReadStream(inputPath);
+	var startTime = new Date();
 
-	const rl = readline.createInterface({
-		input: inputFileStream,
-		crlfDelay: Infinity
-	});
+	if (isItRunning == 0) {
+		fs.writeFileSync(fileThatContainsRunningStatus, "1");
 
-	var outputStream = fs.createWriteStream(outputPath, {
-		flags: 'a' // 'a' means appending (old data will be preserved)
-	});
+		logat.debug("Starting from line number", currentLineNumber, fileThatContainsLinesProcessed);
 
-	// var lineNumberFileStream = fs.createWriteStream(fileThatContainsLinesProcessed, {});
+		utils.createFileIfNotExists(outputPath);
 
-	var inputFileLineNumber = 0;
+		const inputFileStream = fs.createReadStream(inputPath);
 
-	rl.on('line', (line) => {
-			inputFileLineNumber++;
-			if (inputFileLineNumber > currentLineNumber) {
-				currentLineNumber++;
-				outputStream.write(sanitizeLine(line, allRules) + "\n");
-				// lineNumberFileStream.write(currentLineNumber.toString());
-				fs.writeFileSync(fileThatContainsLinesProcessed, currentLineNumber.toString());
-			}
-
-		})
-		.on('close', () => {
-			outputStream.end();
-			// lineNumberFileStream.end();
-			logat.debug("Completed whatever was there for this file", inputPath);
+		const rl = readline.createInterface({
+			input: inputFileStream,
+			crlfDelay: Infinity
 		});
+
+		var outputStream = fs.createWriteStream(outputPath, {
+			flags: 'a' // 'a' means appending (old data will be preserved)
+		});
+
+		var inputFileLineNumber = 0;
+
+		rl
+			.on('line', (line) => {
+				inputFileLineNumber++;
+				// logat.debug(line)
+				// logat.debug(`inputFileLineNumber = ${inputFileLineNumber}, currentLineNumber = ${currentLineNumber}`)
+				if (inputFileLineNumber > currentLineNumber) {
+					// logat.debug(`inputFileLineNumber = ${inputFileLineNumber}, originalStartingLineNumber = ${originalStartingLineNumber}, masterConfig.maxLinesInOneGo = ${masterConfig.maxLinesInOneGo} --`)
+					if (inputFileLineNumber > originalStartingLineNumber + masterConfig.maxLinesInOneGo) {
+						rl.close();
+					} else {
+						currentLineNumber++;
+						outputStream.write(sanitizeLine(line, allRules) + "\n");
+						fs.writeFileSync(fileThatContainsLinesProcessed, currentLineNumber.toString());
+					}
+				}
+			})
+			.on('close', () => {
+				var endTime = new Date();
+				var timeDifference = endTime - startTime;
+
+				logat.debug(`Finished processing in ${timeDifference} milli-seconds at speed of ${Math.floor((inputFileLineNumber - originalStartingLineNumber)*1000/timeDifference)} lines per second`);
+				outputStream.end();
+
+				fs.writeFileSync(fileThatContainsRunningStatus, "0");
+
+				logat.debug("Completed whatever was there for this file", inputPath);
+			});
+	}
 };
 
 var initiateThisJob = function(thisJob, allRules, masterConfig) {
@@ -66,7 +99,19 @@ var initiateThisJob = function(thisJob, allRules, masterConfig) {
 };
 
 var initiateTheJobs = function(allRules, allJobs, masterConfig) {
-	logat.debug(allRules, allJobs, masterConfig);
+	logat.debug("--------------------------------------------------");
+	// logat.debug(allRules, allJobs, masterConfig);
+
+	// ///////////////////////////////////////////////////////
+	// Below block is only for sanity purpose
+	var allowedRuleTypes = ["regex"];
+	for (var i = 0; i < allRules.length; i++) {
+		var thisRuleType = allRules[i].type;
+		if (allowedRuleTypes.indexOf(thisRuleType) == -1) {
+			logat.error(`This kind of rule is not allowed yet - ${thisRuleType}. Allowed types are ${allowedRuleTypes.join(", ")}. All occurrences of this rule in the system will be simply ignored. Refer documentation for more details.`)
+		}
+	}
+	// ///////////////////////////////////////////////////////
 
 	// Here I will simply make fire and forget call to the node function
 	// That will check if process is already running or not
