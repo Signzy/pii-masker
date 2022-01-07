@@ -8,12 +8,30 @@ var getHashedPathName = function(input) {
 	return crypto.createHash('md5').update(input).digest('hex');
 };
 
-var sanitizeLine = function(line, allRules) {
+var sanitizeLine = function(line, allRules, applyRedactionRule = true) {
 	for (var i = 0; i < allRules.length; i++) {
 		var thisRule = allRules[i];
 		var thisRuleType = thisRule.type;
 		if (thisRule.type == "regex") {
-			line = line.split(new RegExp(thisRule.definition)).join(`...XXX ${thisRule.name} XXX...`)
+
+			if (applyRedactionRule) {
+				var redactionRule = thisRule.redactionRule;
+				redactionRule = redactionRule.split(",");
+
+				var matches = line.match(new RegExp(thisRule.definition, "g"));
+				if (matches && matches.length > 0) {
+					for (var j = 0; j < matches.length; j++) {
+						var thisMatch = matches[j];
+						var toReplaceWith = "";
+						toReplaceWith += thisMatch.slice(0, redactionRule[0]);
+						toReplaceWith += `XX-${thisRule.name}-XX`;
+						toReplaceWith += thisMatch.slice(-1 * redactionRule[1]);
+						line = line.replace(new RegExp(thisMatch), toReplaceWith);
+					}
+				}
+			} else {
+				line = line.split(new RegExp(thisRule.definition)).join(`...XXX ${thisRule.name} XXX...`)
+			}
 		} else {
 			// Do nothing
 		}
@@ -34,7 +52,11 @@ var runSanitizerForInputAndOutputPaths = function(inputPath, outputPath, allRule
 
 	logat.debug(`currentLineNumber = ${currentLineNumber}, originalStartingLineNumber = ${originalStartingLineNumber}`)
 	// logat.debug(utils.getFileContentUTF8(fileThatContainsLinesProcessed));
-	var isItRunning = parseInt(utils.getFileContentUTF8(fileThatContainsRunningStatus));
+	
+	// hardcoded it for now. This needs to be changed if need be. Right now just doing 500 lines at a time.
+	// Uncomment the isItRunning line to get the status from file
+	var isItRunning = 0; 
+	// var isItRunning = parseInt(utils.getFileContentUTF8(fileThatContainsRunningStatus));
 
 	logat.debug("is it already running", isItRunning);
 	logat.debug("Starting for path", inputPath);
@@ -79,13 +101,16 @@ var runSanitizerForInputAndOutputPaths = function(inputPath, outputPath, allRule
 				}
 			})
 			.on('close', () => {
-				var endTime = new Date();
-				var timeDifference = endTime - startTime;
+				if (currentLineNumber > originalStartingLineNumber) {
+					var endTime = new Date();
+					var timeDifference = endTime - startTime;
 
-				logat.debug(`Finished processing in ${timeDifference} milli-seconds at speed of ${Math.floor((inputFileLineNumber - originalStartingLineNumber)*1000/timeDifference)} lines per second`);
-				outputStream.end();
+					logat.debug(`Finished processing in ${timeDifference} milli-seconds at speed of ${Math.floor((inputFileLineNumber - originalStartingLineNumber)*1000/timeDifference)} lines per second`);
+					outputStream.end();
 
-				fs.writeFileSync(fileThatContainsRunningStatus, "0");
+					fs.writeFileSync(fileThatContainsRunningStatus, "0");
+					
+				}
 
 				logat.debug("Completed whatever was there for this file", inputPath);
 			});
