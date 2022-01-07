@@ -1,0 +1,17 @@
+Types of PII data
+Aadhaar
+PAN
+Passport number
+IP
+
+MongoID
+
+
+Persist file link
+
+
+AccessToken
+Address
+
+/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
+
