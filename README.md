@@ -77,6 +77,3 @@ The reason for creating this as a streamer over files and not as an extension to
 Still thought to be given to the below points;
 Applies to basically filters the rules to be applied, for example the rule type of Nginx and NodeJS logs may be different. "appliesTo": [""] can be used, but we need to think if this is of much value add and adds to the system's speed ?
 
-
-Discussion on the redaction part is in this document.
-https://docs.google.com/document/d/1pJ0vHGaNJgRPOu4b84vWJWeUCVBt4NRYTXNrE-C47Qc/edit
