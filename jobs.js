@@ -41,9 +41,15 @@ var sanitizeLine = function(line, allRules, applyRedactionRule = true) {
 
 var runSanitizerForInputAndOutputPaths = function(inputPath, outputPath, allRules, masterConfig) {
 
-	var hashOfInputFilePath = getHashedPathName(inputPath); // creating hash for making it unique
+	var fileBirthTime = fs.statSync(inputPath).birthtime.toUTCString();
+
+	var nameToHash = inputPath + fileBirthTime; // Added file birth time to handle log rotation. So if file is rotated, new file has new birth time. example access.log of nginx.
+
+	var hashOfInputFilePath = getHashedPathName(nameToHash); // creating hash for making it unique
 	var fileThatContainsRunningStatus = masterConfig.tmpDirectory + "/" + hashOfInputFilePath + ".running";
 	var fileThatContainsLinesProcessed = masterConfig.tmpDirectory + "/" + hashOfInputFilePath + ".linenumber";
+
+	logat.debug("nameToHash", nameToHash,"hashOfInputFilePath", hashOfInputFilePath, "fileThatContainsRunningStatus", fileThatContainsRunningStatus, "fileThatContainsLinesProcessed", fileThatContainsLinesProcessed);
 
 	utils.createFileIfNotExists(fileThatContainsRunningStatus, "0");
 	utils.createFileIfNotExists(fileThatContainsLinesProcessed, "0");
@@ -52,10 +58,10 @@ var runSanitizerForInputAndOutputPaths = function(inputPath, outputPath, allRule
 
 	logat.debug(`currentLineNumber = ${currentLineNumber}, originalStartingLineNumber = ${originalStartingLineNumber}`)
 	// logat.debug(utils.getFileContentUTF8(fileThatContainsLinesProcessed));
-	
+
 	// hardcoded it for now. This needs to be changed if need be. Right now just doing 500 lines at a time.
 	// Uncomment the isItRunning line to get the status from file
-	var isItRunning = 0; 
+	var isItRunning = 0;
 	// var isItRunning = parseInt(utils.getFileContentUTF8(fileThatContainsRunningStatus));
 
 	logat.debug("is it already running", isItRunning);
@@ -109,7 +115,7 @@ var runSanitizerForInputAndOutputPaths = function(inputPath, outputPath, allRule
 					outputStream.end();
 
 					fs.writeFileSync(fileThatContainsRunningStatus, "0");
-					
+
 				}
 
 				logat.debug("Completed whatever was there for this file", inputPath);
