@@ -13,9 +13,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/signzycode/pii-masker.git"
+    "url": "https://github.com/Signzy/pii-masker.git"
   },
   "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/signzycode/pii-masker#readme"
+  "homepage": "https://github.com/Signzy/pii-masker"
 }
