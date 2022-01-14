@@ -6,7 +6,7 @@ Write a streamer that can take a log file and stream the sanitized log lines fro
 
 The purpose of this system is to clean up the logs and other entries
 - First target is to clean up the log files (or any other files for that matter.)
-- ther locations of the PII data will come in later on.
+- The locations of the PII data will come in later on.
 
 Create a default list of type of data. This types of data will be maintained by the repository itself
 There should be user configurable list of types of data also that the system can take as an input.
