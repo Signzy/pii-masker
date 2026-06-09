@@ -1,0 +1,17 @@
+# Source: https://microsoft.github.io/presidio/supported_entities/
+# https://en.wikipedia.org/wiki/National_Registration_Identity_Card
+# S1234567D: sum=106, 106%11=7, S-table[7]='D' (JZIHGFEDCBA)
+# T0000001E: sum=2, offset=4, (2+4)%11=6, S/T-table[6]='E'
+# F1234567N: sum=106, 106%11=7, F-table[7]='N' (XWUTRQPNMLK)
+
+[[recognizer]]
+entity = "SG_NRIC_FIN"
+country = "SG"
+regex = '\b[STFGM][0-9]{7}[A-Z]\b'
+validator = "sg_nric"
+score = 0.85
+context = ["nric", "fin", "ic", "identity card", "singapore"]
+enabled = true
+examples = ["S1234567D", "T0000001E", "F1234567N"]
+counter_examples = ["S1234567A", "A1234567D", "S123456D"]
+mask = { kind = "redact" }

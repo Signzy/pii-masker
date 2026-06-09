@@ -1,0 +1,61 @@
+# Source: https://microsoft.github.io/presidio/supported_entities/
+
+[[recognizer]]
+entity = "US_SSN"
+country = "US"
+regex = '\b[0-9]{3}-[0-9]{2}-[0-9]{4}\b'
+validator = "us_ssn"
+score = 0.85
+context = ["ssn", "social security", "social", "taxpayer"]
+enabled = true
+examples = ["219-09-9999", "457-55-5462", "123-45-6789"]
+counter_examples = ["000-12-3456", "666-12-3456", "123-00-3456"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "US_ITIN"
+country = "US"
+regex = '\b9[0-9]{2}-[7-8][0-9]-[0-9]{4}\b'
+validator = "none"
+score = 0.85
+context = ["itin", "taxpayer", "individual taxpayer"]
+enabled = true
+examples = ["900-70-0000", "912-80-1234", "999-75-9999"]
+counter_examples = ["219-09-9999", "900-60-0000", "900-90-0000"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "US_ABA_ROUTING"
+country = "US"
+regex = '\b[0-9]{9}\b'
+validator = "aba_routing"
+score = 0.60
+context = ["routing", "aba", "bank", "transit"]
+enabled = true
+examples = ["322271627", "021000021", "011000015"]
+counter_examples = ["123456789", "111111111", "999999999"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "US_BANK_NUMBER"
+country = "US"
+regex = '\b[0-9]{8,17}\b'
+validator = "none"
+score = 0.30
+context = ["account", "bank account", "checking", "savings"]
+enabled = true
+examples = ["12345678", "123456789012", "12345678901234567"]
+counter_examples = ["1234567", "123456789012345678", "hello"]
+mask = { kind = "partial", suffix = 4, mask_char = "*" }
+
+[[recognizer]]
+entity = "US_PASSPORT"
+country = "US"
+regex = '\b[0-9]{9}\b'
+validator = "none"
+score = 0.30
+context = ["passport", "travel document", "visa"]
+enabled = true
+examples = ["123456789", "987654321", "555555555"]
+counter_examples = ["12345678", "1234567890", "abcdefghi"]
+mask = { kind = "redact" }

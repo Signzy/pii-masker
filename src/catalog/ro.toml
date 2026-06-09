@@ -1,0 +1,13 @@
+# Source: https://en.wikipedia.org/wiki/National_identification_number#Romania
+
+[[recognizer]]
+entity = "RO_CNP"
+country = "RO"
+regex = '\b[1-9][0-9]{12}\b'
+validator = "ro_cnp"
+score = 0.85
+context = ["cnp", "cod numeric personal", "romania", "buletin"]
+enabled = true
+examples = ["1850101221144", "2900101221141", "1960101221148"]
+counter_examples = ["1850101221145", "0000000000000", "hello"]
+mask = { kind = "redact" }

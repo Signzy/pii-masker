@@ -1,0 +1,13 @@
+# Source: https://en.wikipedia.org/wiki/Turkish_identification_number
+
+[[recognizer]]
+entity = "TR_TCKN"
+country = "TR"
+regex = '\b[1-9][0-9]{10}\b'
+validator = "tr_tckn"
+score = 0.85
+context = ["tckn", "kimlik", "turkey", "turk"]
+enabled = true
+examples = ["10000000146", "19191919190", "17291716060"]
+counter_examples = ["10000000147", "00000000000", "hello"]
+mask = { kind = "redact" }

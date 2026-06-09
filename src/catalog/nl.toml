@@ -1,0 +1,18 @@
+# Source: https://en.wikipedia.org/wiki/Citizen_Service_Number
+# BSN 11-test: 9*d1+8*d2+7*d3+6*d4+5*d5+4*d6+3*d7+2*d8-d9 must be divisible by 11 (nonzero)
+# Verified:
+#   111222333: 9+8+7+12+10+8+9+6-3=66; 66%11=0 ✓
+#   123456782: 9+16+21+24+25+24+21+16-2=154; 154%11=0 ✓
+#   999999990: 81+72+63+54+45+36+27+18-0=396; 396%11=0 ✓
+
+[[recognizer]]
+entity = "NL_BSN"
+country = "NL"
+regex = '\b[0-9]{9}\b'
+validator = "nl_bsn"
+score = 0.85
+context = ["bsn", "burgerservicenummer", "sofinummer"]
+enabled = true
+examples = ["111222333", "123456782", "999999990"]
+counter_examples = ["000000000", "123456789", "111111111"]
+mask = { kind = "redact" }

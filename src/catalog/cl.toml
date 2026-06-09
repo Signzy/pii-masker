@@ -1,0 +1,14 @@
+# Source: https://en.wikipedia.org/wiki/National_identification_number#Chile
+# RUN/RUT mod-11 with K=10
+
+[[recognizer]]
+entity = "CL_RUN"
+country = "CL"
+regex = '\b[0-9]{1,2}\.?[0-9]{3}\.?[0-9]{3}[-]?[0-9K]\b'
+validator = "cl_run"
+score = 0.85
+context = ["rut", "run", "rol unico", "chile"]
+enabled = true
+examples = ["12.345.678-9", "11.111.111-1", "17.095.767-K"]
+counter_examples = ["12.345.678-0", "00.000.000-0", "hello"]
+mask = { kind = "redact" }

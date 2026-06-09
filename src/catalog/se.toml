@@ -1,0 +1,14 @@
+# Source: https://en.wikipedia.org/wiki/Personal_identity_number_(Sweden)
+# Luhn applied to 10-digit form (yymmddNNNC)
+
+[[recognizer]]
+entity = "SE_PERSONNUMMER"
+country = "SE"
+regex = '\b[0-9]{6}[-+][0-9]{4}\b'
+validator = "luhn"
+score = 0.85
+context = ["personnummer", "personal number", "sweden", "svensk"]
+enabled = true
+examples = ["811218-9876", "670919-9530", "550226-5703"]
+counter_examples = ["811218-9877", "000000-0000", "hello"]
+mask = { kind = "redact" }

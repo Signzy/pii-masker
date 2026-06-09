@@ -1,0 +1,59 @@
+[package]
+name = "pii-masker"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+description = "Banking-grade PII detection and masking: checksum-validated identifiers across many countries, regex engine, CLI + log-stream daemon."
+license = "GPL-3.0-only"
+repository = "https://github.com/Signzy/pii-masker"
+homepage = "https://github.com/Signzy/pii-masker"
+documentation = "https://docs.rs/pii-masker"
+readme = "README.md"
+keywords = ["pii", "redaction", "masking", "privacy", "compliance"]
+categories = ["command-line-utilities", "text-processing"]
+authors = ["Signzy <opensource@signzy.com>"]
+exclude = [".github/", "docs/", "fuzz/", "benches/"]
+
+[lib]
+name = "pii_masker"
+
+[[bin]]
+name = "pii-masker"
+path = "src/main.rs"
+required-features = ["cli"]
+
+[features]
+default = ["cli"]
+cli = ["dep:clap", "dep:env_logger", "dep:anyhow"]
+phone = ["dep:phonenumber"]
+
+[dependencies]
+regex = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+sha2 = "0.10"
+log = "0.4"
+thiserror = "1"
+clap = { version = "4", features = ["derive"], optional = true }
+env_logger = { version = "0.11", optional = true }
+anyhow = { version = "1", optional = true }
+phonenumber = { version = "0.3", optional = true }
+
+[dev-dependencies]
+tempfile = "3"
+proptest = "1"
+assert_cmd = "2"
+predicates = "3"
+criterion = "0.5"
+
+[[bench]]
+name = "mask"
+harness = false
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[lints.clippy]
+all = "warn"

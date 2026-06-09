@@ -1,0 +1,18 @@
+# Source: https://en.wikipedia.org/wiki/INSEE_code
+# FR NIR: 13-digit body + 2-digit key where key = 97 - (body mod 97).
+# Verified:
+#   195017512345604: body=1950175123456, 1950175123456%97=93, key=4 ✓
+#   160050123456749: body=1600501234567, 1600501234567%97=48, key=49 ✓
+#   283010212345688: body=2830102123456, 2830102123456%97=9, key=88 ✓
+
+[[recognizer]]
+entity = "FR_NIR"
+country = "FR"
+regex = '\b[12][0-9]{14}\b'
+validator = "fr_nir"
+score = 0.85
+context = ["nir", "insee", "securite sociale", "secu"]
+enabled = true
+examples = ["195017512345604", "160050123456749", "283010212345688"]
+counter_examples = ["195017512345600", "395017512345678", "hello"]
+mask = { kind = "redact" }

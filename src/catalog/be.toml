@@ -1,0 +1,19 @@
+# Source: https://en.wikipedia.org/wiki/National_identification_number#Belgium
+# BE NRN: first 9 digits as body; check = 97 - (body mod 97) for born before 2000,
+#          or 97 - ((body + 2_000_000_000) mod 97) for born 2000+.
+# Verified:
+#   93051822361: body=930518223, %97=36, key=61 ✓
+#   85073003328: body=850730033, %97=69, key=28 ✓
+#   85010100115: body=850101001, %97=82, key=15 ✓
+
+[[recognizer]]
+entity = "BE_NRN"
+country = "BE"
+regex = '\b[0-9]{2}\.?[0-9]{2}\.?[0-9]{2}[-. ]?[0-9]{3}[-. ]?[0-9]{2}\b'
+validator = "be_nrn"
+score = 0.85
+context = ["nrn", "rijksregisternummer", "registre national", "numero national"]
+enabled = true
+examples = ["93051822361", "85073003328", "85010100115"]
+counter_examples = ["01020399812", "00000000000", "12345678901"]
+mask = { kind = "redact" }

@@ -1,0 +1,25 @@
+# Source: https://en.wikipedia.org/wiki/CURP
+
+[[recognizer]]
+entity = "MX_CURP"
+country = "MX"
+regex = '\b[A-Z][A-Z][A-Z][A-Z][0-9]{2}[0-9]{2}[0-9]{2}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9][0-9]\b'
+validator = "mx_curp"
+score = 0.85
+context = ["curp", "clave unica", "registro", "poblacion"]
+enabled = true
+examples = ["BADD110313HCMLNS09", "HEGG560427MVZRRL04", "AAAA000101HDFAAA09"]
+counter_examples = ["BADD110313HCMLNS00", "00000000000000000", "hello"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "MX_RFC"
+country = "MX"
+regex = '\b[A-Z]{4}[0-9]{6}[A-Z0-9]{3}\b'
+validator = "none"
+score = 0.70
+context = ["rfc", "registro federal", "contribuyentes"]
+enabled = true
+examples = ["ABCD800101ABC", "XAXX010101000", "HEGG560427HVZ"]
+counter_examples = ["ABCD8001010", "12345678901234", "hello"]
+mask = { kind = "redact" }

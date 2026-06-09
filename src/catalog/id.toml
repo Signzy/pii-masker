@@ -1,0 +1,13 @@
+# Source: https://en.wikipedia.org/wiki/National_identification_number#Indonesia
+
+[[recognizer]]
+entity = "ID_NIK"
+country = "ID"
+regex = '\b[0-9]{16}\b'
+validator = "none"
+score = 0.50
+context = ["nik", "ktp", "indonesia", "kartu tanda penduduk"]
+enabled = true
+examples = ["3171012501800001", "1234567890123456", "9876543210987654"]
+counter_examples = ["123456789012345", "12345678901234567", "hello"]
+mask = { kind = "redact" }

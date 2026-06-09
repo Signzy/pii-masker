@@ -1,0 +1,25 @@
+# Source: https://en.wikipedia.org/wiki/Individual_Taxpayer_Identification_Number_(Russia)
+
+[[recognizer]]
+entity = "RU_INN"
+country = "RU"
+regex = '\b[0-9]{10}(?:[0-9]{2})?\b'
+validator = "ru_inn"
+score = 0.85
+context = ["inn", "identifikatsionny nomer", "russia"]
+enabled = true
+examples = ["7707083893", "500100732259", "7725038627"]
+counter_examples = ["7707083894", "0000000000", "hello"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "RU_SNILS"
+country = "RU"
+regex = '\b[0-9]{3}[-]?[0-9]{3}[-]?[0-9]{3}[ ]?[0-9]{2}\b'
+validator = "ru_snils"
+score = 0.85
+context = ["snils", "strahovoe", "russia"]
+enabled = true
+examples = ["11222333404", "112-233-334 04", "11222333404"]
+counter_examples = ["11222333405", "hello", "1234"]
+mask = { kind = "redact" }

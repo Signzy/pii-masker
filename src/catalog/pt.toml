@@ -1,0 +1,14 @@
+# Source: https://en.wikipedia.org/wiki/Fiscal_identification_number_(Portugal)
+# NIF: 9 digits, mod-11 check
+
+[[recognizer]]
+entity = "PT_NIF"
+country = "PT"
+regex = '\b[1-9][0-9]{8}\b'
+validator = "pt_nif"
+score = 0.85
+context = ["nif", "contribuinte", "portugal", "numero fiscal"]
+enabled = true
+examples = ["545259045", "503064811", "219867180"]
+counter_examples = ["545259046", "000000000", "hello"]
+mask = { kind = "redact" }

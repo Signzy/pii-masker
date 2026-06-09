@@ -1,0 +1,13 @@
+# Source: https://en.wikipedia.org/wiki/National_identification_number#Norway
+
+[[recognizer]]
+entity = "NO_FODSELSNUMMER"
+country = "NO"
+regex = '\b[0-9]{11}\b'
+validator = "no_fnr"
+score = 0.85
+context = ["fodselsnummer", "personnummer", "norway", "norsk"]
+enabled = true
+examples = ["01010050169", "24014021512", "17070694373"]
+counter_examples = ["01010050160", "00000000000", "hello"]
+mask = { kind = "redact" }

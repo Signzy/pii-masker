@@ -1,0 +1,25 @@
+# Source: https://en.wikipedia.org/wiki/CUIT
+
+[[recognizer]]
+entity = "AR_CUIT"
+country = "AR"
+regex = '\b[0-9]{2}[-]?[0-9]{8}[-]?[0-9]\b'
+validator = "ar_cuit"
+score = 0.85
+context = ["cuit", "cuil", "argentina", "identificacion tributaria"]
+enabled = true
+examples = ["20-12345678-4", "23-14156933-9", "30-66446699-0"]
+counter_examples = ["20-12345678-5", "00-00000000-0", "hello"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "AR_DNI"
+country = "AR"
+regex = '\b[0-9]{7,8}\b'
+validator = "none"
+score = 0.40
+context = ["dni", "documento nacional", "argentina"]
+enabled = true
+examples = ["12345678", "99999999", "1234567"]
+counter_examples = ["123456", "123456789", "hello"]
+mask = { kind = "redact" }

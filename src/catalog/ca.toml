@@ -1,0 +1,13 @@
+# Source: https://en.wikipedia.org/wiki/Social_insurance_number
+
+[[recognizer]]
+entity = "CA_SIN"
+country = "CA"
+regex = '\b[0-9]{3}[ -]?[0-9]{3}[ -]?[0-9]{3}\b'
+validator = "luhn"
+score = 0.85
+context = ["sin", "social insurance", "canada", "revenue"]
+enabled = true
+examples = ["046454286", "130692544", "046 454 286"]
+counter_examples = ["046454287", "000000000", "123456789"]
+mask = { kind = "redact" }

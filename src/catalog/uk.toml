@@ -1,0 +1,37 @@
+# Source: https://microsoft.github.io/presidio/supported_entities/
+
+[[recognizer]]
+entity = "UK_NHS"
+country = "UK"
+regex = '\b[0-9]{3}[ ]?[0-9]{3}[ ]?[0-9]{4}\b'
+validator = "nhs_mod11"
+score = 0.85
+context = ["nhs", "national health", "patient"]
+enabled = true
+examples = ["9434765919", "943 476 5919", "2000000002"]
+counter_examples = ["9434765910", "1111111110", "9434765918"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "UK_NINO"
+country = "UK"
+regex = '\b[ABCEGHJ-PRSTW-Z][ABCEGHJ-NPRSTW-Z][0-9]{6}[A-D]\b'
+validator = "none"
+score = 0.85
+context = ["nino", "national insurance", "ni number"]
+enabled = true
+examples = ["AA000000A", "TN876543B", "SE123456D"]
+counter_examples = ["AA000000E", "00000000A", "AAAAAAAAAA"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "UK_POSTCODE"
+country = "UK"
+regex = '\b[A-Z]{1,2}[0-9][A-Z0-9]?[ ]?[0-9][A-Z]{2}\b'
+validator = "none"
+score = 0.50
+context = ["postcode", "postal code", "zip"]
+enabled = true
+examples = ["SW1A 1AA", "EC1A 1BB", "W1A 0AX"]
+counter_examples = ["ZZZZZ", "12345", "not-a-postcode"]
+mask = { kind = "redact" }

@@ -1,0 +1,18 @@
+# Source: https://microsoft.github.io/presidio/supported_entities/
+# https://en.wikipedia.org/wiki/Italian_fiscal_code
+# Check char computation: sum of odd/even position values (1-indexed) mod 26 + 'A'.
+# Verified: RSSMRA80A01H501U (sum=98, 98%26=20, 'A'+20='U')
+#           RSSMRA85T10A562S (sum=122, 122%26=18, 'A'+18='S')
+#           VRDGPP70A01H501S (sum=96, 96%26=18, 'A'+18='S')
+
+[[recognizer]]
+entity = "IT_FISCAL_CODE"
+country = "IT"
+regex = '\b[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]\b'
+validator = "it_fiscal"
+score = 0.85
+context = ["codice fiscale", "fiscal code", "codice", "cf"]
+enabled = true
+examples = ["RSSMRA80A01H501U", "RSSMRA85T10A562S", "VRDGPP70A01H501S"]
+counter_examples = ["RSSMRA80A01H501Z", "AAABBB00A00A000A", "12345678901234567"]
+mask = { kind = "redact" }

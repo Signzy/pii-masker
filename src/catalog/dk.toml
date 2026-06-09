@@ -1,0 +1,13 @@
+# Source: https://en.wikipedia.org/wiki/Personal_identification_number_(Denmark)
+
+[[recognizer]]
+entity = "DK_CPR"
+country = "DK"
+regex = '\b[0-3][0-9][0-1][0-9][0-9]{2}[-]?[0-9]{4}\b'
+validator = "none"
+score = 0.85
+context = ["cpr", "personnummer", "denmark", "dansk"]
+enabled = true
+examples = ["010101-0101", "0101010101", "311299-1234"]
+counter_examples = ["991299-1234", "hello", "00000000"]
+mask = { kind = "redact" }

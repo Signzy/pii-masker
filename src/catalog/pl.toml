@@ -1,0 +1,14 @@
+# Source: https://microsoft.github.io/presidio/supported_entities/
+# https://en.wikipedia.org/wiki/PESEL
+
+[[recognizer]]
+entity = "PL_PESEL"
+country = "PL"
+regex = '\b[0-9]{11}\b'
+validator = "pl_pesel"
+score = 0.85
+context = ["pesel", "numer pesel", "identyfikator"]
+enabled = true
+examples = ["44051401359", "85010212342", "92071314764"]
+counter_examples = ["44051401350", "85010212343", "12345678901"]
+mask = { kind = "redact" }

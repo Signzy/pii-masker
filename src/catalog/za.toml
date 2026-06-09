@@ -1,0 +1,13 @@
+# Source: https://en.wikipedia.org/wiki/South_African_identity_document
+
+[[recognizer]]
+entity = "ZA_ID"
+country = "ZA"
+regex = '\b[0-9]{13}\b'
+validator = "luhn"
+score = 0.85
+context = ["id number", "south africa", "identity", "sa id"]
+enabled = true
+examples = ["8001015009087", "9202204720082", "7903075800083"]
+counter_examples = ["8001015009088", "0000000000000", "hello"]
+mask = { kind = "redact" }

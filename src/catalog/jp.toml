@@ -1,0 +1,14 @@
+# Source: https://en.wikipedia.org/wiki/Individual_Number
+# My Number: 12 digits; mod-11 check on last digit
+
+[[recognizer]]
+entity = "JP_MYNUMBER"
+country = "JP"
+regex = '\b[0-9]{12}\b'
+validator = "none"
+score = 0.70
+context = ["my number", "mynumber", "individual number", "japan"]
+enabled = true
+examples = ["123456789012", "000000000000", "999999999999"]
+counter_examples = ["12345678901", "1234567890123", "hello"]
+mask = { kind = "redact" }

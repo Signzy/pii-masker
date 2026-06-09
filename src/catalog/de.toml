@@ -1,0 +1,13 @@
+# Source: https://en.wikipedia.org/wiki/Steuer-Identifikationsnummer
+
+[[recognizer]]
+entity = "DE_TAX_ID"
+country = "DE"
+regex = '\b[1-9][0-9]{10}\b'
+validator = "de_tax_id"
+score = 0.85
+context = ["steuer", "steueridentifikationsnummer", "steuer-id", "tin"]
+enabled = true
+examples = ["86095742719", "47036892816", "65929970489"]
+counter_examples = ["00000000000", "12345678901", "hello"]
+mask = { kind = "redact" }

@@ -1,0 +1,14 @@
+# Source: https://en.wikipedia.org/wiki/Resident_Identity_Card
+# ISO 7064 MOD 11-2 check character
+
+[[recognizer]]
+entity = "CN_RIC"
+country = "CN"
+regex = '\b[1-9][0-9]{5}[0-9]{8}[0-9]{3}[0-9X]\b'
+validator = "cn_ric"
+score = 0.85
+context = ["ric", "id card", "resident identity", "shenfenzheng"]
+enabled = true
+examples = ["11010519491231002X", "44030619900101001X", "110105199001011234"]
+counter_examples = ["11010519491231002Y", "00000000000000000", "hello"]
+mask = { kind = "redact" }

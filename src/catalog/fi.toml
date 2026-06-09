@@ -1,0 +1,14 @@
+# Source: https://microsoft.github.io/presidio/supported_entities/
+# https://en.wikipedia.org/wiki/National_identification_number#Finland
+
+[[recognizer]]
+entity = "FI_HETU"
+country = "FI"
+regex = '\b[0-9]{6}[-+A][0-9]{3}[0-9A-Y]\b'
+validator = "fi_hetu"
+score = 0.85
+context = ["hetu", "henkilotunnus", "personal identity", "sosiaaliturvatunnus"]
+enabled = true
+examples = ["131052-308T", "131052-308T", "131052-308T"]
+counter_examples = ["131052-308X", "000000-000A", "12345678901"]
+mask = { kind = "redact" }

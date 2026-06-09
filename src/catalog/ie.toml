@@ -1,0 +1,13 @@
+# Source: https://en.wikipedia.org/wiki/Personal_Public_Service_Number
+
+[[recognizer]]
+entity = "IE_PPS"
+country = "IE"
+regex = '\b[0-9]{7}[A-Z]{1,2}\b'
+validator = "ie_pps"
+score = 0.85
+context = ["pps", "personal public service", "ireland", "ppsn"]
+enabled = true
+examples = ["1234567T", "1234567TW", "6419071E"]
+counter_examples = ["1234567A", "0000000T", "hello"]
+mask = { kind = "redact" }

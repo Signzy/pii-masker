@@ -1,0 +1,26 @@
+# Source: https://en.wikipedia.org/wiki/CPF_number
+# CPF: 11 digits; two mod-11 check digits
+
+[[recognizer]]
+entity = "BR_CPF"
+country = "BR"
+regex = '\b[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}[-.]?[0-9]{2}\b'
+validator = "br_cpf"
+score = 0.85
+context = ["cpf", "cadastro pessoas fisicas", "documento"]
+enabled = true
+examples = ["529.982.247-25", "111.444.777-35", "046.704.780-45"]
+counter_examples = ["111.111.111-11", "000.000.000-00", "529.982.247-26"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "BR_CNPJ"
+country = "BR"
+regex = '\b[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}[/.]?[0-9]{4}[-.]?[0-9]{2}\b'
+validator = "br_cnpj"
+score = 0.85
+context = ["cnpj", "cadastro nacional", "empresa", "company"]
+enabled = true
+examples = ["11.222.333/0001-81", "34.028.316/0001-03", "07.526.557/0001-00"]
+counter_examples = ["11.111.111/1111-11", "00.000.000/0000-00", "34.028.316/0001-04"]
+mask = { kind = "redact" }

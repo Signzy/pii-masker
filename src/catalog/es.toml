@@ -1,0 +1,25 @@
+# Source: https://microsoft.github.io/presidio/supported_entities/
+
+[[recognizer]]
+entity = "ES_NIF"
+country = "ES"
+regex = '\b[0-9]{8}[A-Z]\b'
+validator = "es_nif"
+score = 0.85
+context = ["nif", "dni", "documento", "identificacion"]
+enabled = true
+examples = ["12345678Z", "00000000T", "99999999R"]
+counter_examples = ["12345678A", "00000000B", "1234567Z"]
+mask = { kind = "redact" }
+
+[[recognizer]]
+entity = "ES_NIE"
+country = "ES"
+regex = '\b[XYZ][0-9]{7}[A-Z]\b'
+validator = "es_nie"
+score = 0.85
+context = ["nie", "extranjero", "residencia"]
+enabled = true
+examples = ["X1234567L", "Y0000000Z", "Z0000000M"]
+counter_examples = ["A1234567L", "X1234567A", "X123456L"]
+mask = { kind = "redact" }
