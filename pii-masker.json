@@ -1,0 +1,24 @@
+{
+  "engine": {
+    "countries": ["US", "IN"],
+    "disableEntities": [],
+    "enableEntities": [],
+    "maskOverrides": {},
+    "customRecognizers": []
+  },
+  "daemon": {
+    "beatInterval": 5000,
+    "tmpDirectory": "/tmp",
+    "maxLinesInOneGo": 5000,
+    "runMode": "info",
+    "jobs": [
+      {
+        "jobName": "example-job",
+        "files": {
+          "input": "/var/log/app/access.log",
+          "output": "/var/log/app/access.masked.log"
+        }
+      }
+    ]
+  }
+}
