@@ -1,0 +1,16 @@
+[build]
+# Shared build settings
+rustflags = []
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = []
+
+[target.aarch64-unknown-linux-gnu]
+rustflags = []
+
+[alias]
+# cargo lint → run clippy with strict settings
+lint = ["clippy", "--", "-W", "clippy::all", "-W", "clippy::pedantic", "-W", "clippy::nursery", "-D", "warnings"]
+
+# cargo fmt-check → check formatting without modifying
+fmt-check = ["fmt", "--", "--check"]

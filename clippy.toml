@@ -1,0 +1,45 @@
+# Clippy lint configuration
+# Run with: cargo clippy -- -W clippy::all
+
+# ── Complexity thresholds ────────────────────────────────────────────
+
+# Cognitive complexity (nesting, branches, loops)
+cognitive-complexity-threshold = 25
+
+# Cyclomatic complexity (independent paths through code)
+# Note: clippy uses cognitive complexity by default; this is a fallback config
+cyclomatic-complexity-threshold = 25
+
+# Max number of arguments per function
+too-many-arguments-threshold = 6
+
+# Max lines per function / impl block
+too-many-lines-threshold = 200
+
+# Type complexity score threshold (composite types get too deep)
+type-complexity-threshold = 250
+
+# Max trait bounds on a single type parameter
+max-trait-bounds = 5
+
+# ── Error & size thresholds ──────────────────────────────────────────
+
+# Max byte size for an Error enum variant before triggering large_error
+large-error-threshold = 128
+
+# Max byte size for types that should not live on the stack
+too-large-for-stack-threshold = 512
+
+# Max byte size for large enum variant differences
+large-enum-variant-threshold = 200
+
+# ── Misc ─────────────────────────────────────────────────────────────
+
+# Allowed disallowed types (none — ban nothing by default)
+disallowed-types = []
+
+# Max inline file size for include_str! / include_bytes!
+max-include-file-size = 1_048_576
+
+# Suppress lints on generated code from these macros
+suppress-underscore-export = true
