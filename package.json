@@ -16,6 +16,6 @@
     "url": "git+ssh://git@bitbucket.org/signzycode/pii-masker.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "homepage": "https://bitbucket.org/signzycode/pii-masker#readme"
 }
