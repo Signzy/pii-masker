@@ -1,9 +1,0 @@
-{
-	"beatInterval": 5000,
-	"jobRefreshInterval": 300,
-	"tmpDirectory": "/tmp",
-	"maxLinesInOneGo": 5000,
-	"alreadyRunningStatusHandleFile": "/tmp",
-	"runMode": "debug",
-	"_help_runMode": "verbose/error/noLog"
- }
