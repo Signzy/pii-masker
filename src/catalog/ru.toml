@@ -8,8 +8,8 @@ validator = "ru_inn"
 score = 0.85
 context = ["inn", "identifikatsionny nomer", "russia"]
 enabled = true
-examples = ["7707083893", "500100732259", "7725038627"]
-counter_examples = ["7707083894", "0000000000", "hello"]
+examples = ["4007836105", "4109035150", "4632519912"]
+counter_examples = ["7100412679", "6271663192", "6147943902"]
 mask = { kind = "redact" }
 
 [[recognizer]]
@@ -20,6 +20,6 @@ validator = "ru_snils"
 score = 0.85
 context = ["snils", "strahovoe", "russia"]
 enabled = true
-examples = ["11222333404", "112-233-334 04", "11222333404"]
-counter_examples = ["11222333405", "hello", "1234"]
+examples = ["87448273356", "91033037145", "95486992900"]
+counter_examples = ["65923945982", "50827897412", "05781408515"]
 mask = { kind = "redact" }

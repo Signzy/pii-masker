@@ -9,6 +9,6 @@ validator = "luhn"
 score = 0.85
 context = ["personnummer", "personal number", "sweden", "svensk"]
 enabled = true
-examples = ["811218-9876", "670919-9530", "550226-5703"]
-counter_examples = ["811218-9877", "000000-0000", "hello"]
+examples = ["700581-3428", "682288-6005", "309007-4828"]
+counter_examples = ["710041-2679", "627166-3192", "614794-3902"]
 mask = { kind = "redact" }

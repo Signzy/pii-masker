@@ -8,6 +8,6 @@ validator = "ie_pps"
 score = 0.85
 context = ["pps", "personal public service", "ireland", "ppsn"]
 enabled = true
-examples = ["1234567T", "1234567TW", "6419071E"]
-counter_examples = ["1234567A", "0000000T", "hello"]
+examples = ["3250410S", "2569062Q", "3674505U"]
+counter_examples = ["3250410T", "2569062R", "hello"]
 mask = { kind = "redact" }

@@ -8,6 +8,6 @@ validator = "luhn"
 score = 0.85
 context = ["sin", "social insurance", "canada", "revenue"]
 enabled = true
-examples = ["046454286", "130692544", "046 454 286"]
-counter_examples = ["046454287", "000000000", "123456789"]
+examples = ["583942115", "459793972", "337288880"]
+counter_examples = ["052973865", "090860183", "495528296"]
 mask = { kind = "redact" }

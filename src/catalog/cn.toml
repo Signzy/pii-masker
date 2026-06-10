@@ -9,6 +9,6 @@ validator = "cn_ric"
 score = 0.85
 context = ["ric", "id card", "resident identity", "shenfenzheng"]
 enabled = true
-examples = ["11010519491231002X", "44030619900101001X", "110105199001011234"]
-counter_examples = ["11010519491231002Y", "00000000000000000", "hello"]
+examples = ["271050782310962162", "438363309192491427", "482880684828677625"]
+counter_examples = ["271050782310962163", "438363309192491428", "hello"]
 mask = { kind = "redact" }

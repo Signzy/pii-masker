@@ -8,8 +8,8 @@ validator = "mx_curp"
 score = 0.85
 context = ["curp", "clave unica", "registro", "poblacion"]
 enabled = true
-examples = ["BADD110313HCMLNS09", "HEGG560427MVZRRL04", "AAAA000101HDFAAA09"]
-counter_examples = ["BADD110313HCMLNS00", "00000000000000000", "hello"]
+examples = ["QOJW359879MRPAMT56", "IWZS032953HQWLBR79", "DODW159083MGRUWA16"]
+counter_examples = ["QOJW359879MRPAMT57", "00000000000000000", "hello"]
 mask = { kind = "redact" }
 
 [[recognizer]]

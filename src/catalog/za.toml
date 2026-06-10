@@ -8,6 +8,6 @@ validator = "luhn"
 score = 0.85
 context = ["id number", "south africa", "identity", "sa id"]
 enabled = true
-examples = ["8001015009087", "9202204720082", "7903075800083"]
-counter_examples = ["8001015009088", "0000000000000", "hello"]
+examples = ["4520723467067", "2032369900940", "8617123413398"]
+counter_examples = ["9874327523083", "2238571325021", "8003330082447"]
 mask = { kind = "redact" }

@@ -8,6 +8,6 @@ validator = "no_fnr"
 score = 0.85
 context = ["fodselsnummer", "personnummer", "norway", "norsk"]
 enabled = true
-examples = ["01010050169", "24014021512", "17070694373"]
-counter_examples = ["01010050160", "00000000000", "hello"]
+examples = ["50151736553", "39101071026", "69492802247"]
+counter_examples = ["65923945982", "50827897412", "05781408515"]
 mask = { kind = "redact" }

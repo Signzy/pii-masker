@@ -8,8 +8,8 @@ validator = "ar_cuit"
 score = 0.85
 context = ["cuit", "cuil", "argentina", "identificacion tributaria"]
 enabled = true
-examples = ["20-12345678-4", "23-14156933-9", "30-66446699-0"]
-counter_examples = ["20-12345678-5", "00-00000000-0", "hello"]
+examples = ["78863153769", "87618629110", "51240625222"]
+counter_examples = ["65923945982", "50827897412", "05781408515"]
 mask = { kind = "redact" }
 
 [[recognizer]]

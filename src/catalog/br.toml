@@ -9,7 +9,7 @@ validator = "br_cpf"
 score = 0.85
 context = ["cpf", "cadastro pessoas fisicas", "documento"]
 enabled = true
-examples = ["529.982.247-25", "111.444.777-35", "046.704.780-45"]
+examples = ["529.982.247-25", "111.444.777-35", "046.704.780-44"]
 counter_examples = ["111.111.111-11", "000.000.000-00", "529.982.247-26"]
 mask = { kind = "redact" }
 
@@ -21,6 +21,6 @@ validator = "br_cnpj"
 score = 0.85
 context = ["cnpj", "cadastro nacional", "empresa", "company"]
 enabled = true
-examples = ["11.222.333/0001-81", "34.028.316/0001-03", "07.526.557/0001-00"]
-counter_examples = ["11.111.111/1111-11", "00.000.000/0000-00", "34.028.316/0001-04"]
+examples = ["15196970226902", "67687814733459", "93573048591607"]
+counter_examples = ["82652016738980", "64335475399563", "02445569935679"]
 mask = { kind = "redact" }

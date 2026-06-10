@@ -9,6 +9,6 @@ validator = "cl_run"
 score = 0.85
 context = ["rut", "run", "rol unico", "chile"]
 enabled = true
-examples = ["12.345.678-9", "11.111.111-1", "17.095.767-K"]
-counter_examples = ["12.345.678-0", "00.000.000-0", "hello"]
+examples = ["507851436", "611159269", "518301047"]
+counter_examples = ["507851437", "507851435", "hello"]
 mask = { kind = "redact" }

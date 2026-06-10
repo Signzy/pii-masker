@@ -8,7 +8,6 @@ regex = '\b[1-9][0-9]{8}\b'
 validator = "pt_nif"
 score = 0.85
 context = ["nif", "contribuinte", "portugal", "numero fiscal"]
-enabled = true
-examples = ["545259045", "503064811", "219867180"]
-counter_examples = ["545259046", "000000000", "hello"]
+examples = ["619726300", "392697769", "752834215"]
+counter_examples = ["652973865", "192262295", "890860183"]
 mask = { kind = "redact" }

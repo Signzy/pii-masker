@@ -8,6 +8,6 @@ validator = "de_tax_id"
 score = 0.85
 context = ["steuer", "steueridentifikationsnummer", "steuer-id", "tin"]
 enabled = true
-examples = ["86095742719", "47036892816", "65929970489"]
-counter_examples = ["00000000000", "12345678901", "hello"]
+examples = ["47824043006", "56570476576", "63356139190"]
+counter_examples = ["15923945982", "20827897412", "95781408515"]
 mask = { kind = "redact" }
