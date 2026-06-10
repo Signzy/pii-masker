@@ -88,12 +88,12 @@ mask = { kind = "redact" }
 [[recognizer]]
 entity = "PHONE_NUMBER"
 country = ""
-regex = '\b\+?[0-9][0-9\-\s().]{6,16}[0-9]\b'
+regex = '\+?[0-9][0-9\-\s().]{5,16}[0-9]\b'
 validator = "phone_loose"
 score = 0.40
 context = ["phone", "tel", "mobile", "fax", "call", "contact"]
 enabled = true
-examples = ["202-555-0100", "44 20 7946 0958", "91 98765 43210"]
+examples = ["+442079460958", "+14155552671", "+919876543210"]
 counter_examples = ["12345", "hello world", "1------2"]
 mask = { kind = "partial", suffix = 2, mask_char = "*" }
 
