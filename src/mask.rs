@@ -1,15 +1,23 @@
+//! Masking strategies and the [`apply_mask`] function.
+
 /// Masking strategy for a detected PII entity.
 #[derive(Debug, Clone)]
 pub enum MaskPolicy {
     /// Replace the entire match with a labeled redaction tag, e.g. `[US_SSN]`.
-    Redact { label: String },
+    Redact {
+        /// Label inserted into the redaction template (defaults to entity name).
+        label: String,
+    },
 
     /// Keep the first `prefix` and last `suffix` alphanumeric characters visible;
     /// replace the rest with `mask_char`. Non-alnum separators (spaces, dashes, dots)
     /// are preserved verbatim.
     Partial {
+        /// Number of leading alphanumeric characters to keep visible.
         prefix: usize,
+        /// Number of trailing alphanumeric characters to keep visible.
         suffix: usize,
+        /// Character used to replace masked alphanumeric positions.
         mask_char: char,
     },
 
@@ -17,7 +25,10 @@ pub enum MaskPolicy {
     /// The 12 hex chars are the first 12 bytes of the SHA-256 digest of the matched text.
     /// NOTE: deterministic hashing of low-entropy inputs (e.g. 4-digit PINs) is reversible
     /// via rainbow tables. Document this caveat in security docs.
-    Hash { label: String },
+    Hash {
+        /// Label inserted into the hash token (defaults to entity name).
+        label: String,
+    },
 }
 
 /// Global options for mask formatting.
@@ -30,9 +41,7 @@ pub struct MaskOptions {
 
 impl Default for MaskOptions {
     fn default() -> Self {
-        Self {
-            redact_template: "[{entity}]".to_string(),
-        }
+        Self { redact_template: "[{entity}]".to_string() }
     }
 }
 
@@ -42,9 +51,7 @@ impl Default for MaskOptions {
 /// overridden in the recognizer).
 pub fn apply_mask(matched: &str, label: &str, policy: &MaskPolicy, opts: &MaskOptions) -> String {
     match policy {
-        MaskPolicy::Redact { label: lbl } => {
-            opts.redact_template.replace("{entity}", lbl)
-        }
+        MaskPolicy::Redact { label: lbl } => opts.redact_template.replace("{entity}", lbl),
         MaskPolicy::Hash { label: lbl } => {
             use sha2::{Digest, Sha256};
             let mut hasher = Sha256::new();
@@ -52,12 +59,10 @@ pub fn apply_mask(matched: &str, label: &str, policy: &MaskPolicy, opts: &MaskOp
             let digest = hasher.finalize();
             let hex = hex_encode(&digest);
             format!("[{}:{}]", lbl, &hex[..12])
-        }
-        MaskPolicy::Partial {
-            prefix,
-            suffix,
-            mask_char,
-        } => partial_mask(matched, label, *prefix, *suffix, *mask_char, opts),
+        },
+        MaskPolicy::Partial { prefix, suffix, mask_char } => {
+            partial_mask(matched, label, *prefix, *suffix, *mask_char, opts)
+        },
     }
 }
 

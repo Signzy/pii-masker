@@ -1,3 +1,6 @@
+//! Criterion throughput benchmark for the PII masking engine.
+#![allow(missing_docs)]
+
 use criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput};
 use pii_masker::Engine;
 
