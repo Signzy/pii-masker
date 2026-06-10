@@ -6,8 +6,8 @@
 //!    original card AND `analyze(output)` finds no validated CREDIT_CARD.
 //! c) `mask()` output is always valid UTF-8.
 
-use proptest::prelude::*;
 use pii_masker::Engine;
+use proptest::prelude::*;
 
 fn global() -> Engine {
     Engine::builder().build().expect("engine")

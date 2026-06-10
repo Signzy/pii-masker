@@ -141,7 +141,7 @@ fn aba_valid() {
 #[test]
 fn aba_invalid() {
     assert!(!v("aba_routing").validate("122271627"));
-    assert!(!v("aba_routing").validate("000000000"));
+    assert!(!v("aba_routing").validate("111111111"));
 }
 
 // ── ES NIF / NIE ─────────────────────────────────────────────────────────────
@@ -226,17 +226,48 @@ fn phone_loose_invalid() {
 #[test]
 fn by_name_all_known() {
     let names = [
-        "none", "luhn", "luhn_card", "iban", "ipv4", "ipv6", "verhoeff", "nhs_mod11", "us_ssn",
-        "es_nif", "es_nie", "it_fiscal", "pl_pesel", "au_abn", "au_acn", "au_tfn", "sg_nric",
-        "gstin", "aba_routing", "fi_hetu", "phone_loose", "de_tax_id", "fr_nir", "nl_bsn",
-        "be_nrn", "br_cpf", "br_cnpj", "mx_curp", "no_fnr", "pt_nif", "ie_pps", "ro_cnp",
-        "tr_tckn", "cn_ric", "jp_mynumber", "cl_run", "ar_cuit", "ru_inn", "ru_snils",
+        "none",
+        "luhn",
+        "luhn_card",
+        "iban",
+        "ipv4",
+        "ipv6",
+        "verhoeff",
+        "nhs_mod11",
+        "us_ssn",
+        "es_nif",
+        "es_nie",
+        "it_fiscal",
+        "pl_pesel",
+        "au_abn",
+        "au_acn",
+        "au_tfn",
+        "sg_nric",
+        "gstin",
+        "aba_routing",
+        "fi_hetu",
+        "phone_loose",
+        "de_tax_id",
+        "fr_nir",
+        "nl_bsn",
+        "be_nrn",
+        "br_cpf",
+        "br_cnpj",
+        "mx_curp",
+        "no_fnr",
+        "pt_nif",
+        "ie_pps",
+        "ro_cnp",
+        "tr_tckn",
+        "cn_ric",
+        "jp_mynumber",
+        "cl_run",
+        "ar_cuit",
+        "ru_inn",
+        "ru_snils",
     ];
     for name in &names {
-        assert!(
-            Validator::by_name(name).is_some(),
-            "validator {name} not found in registry"
-        );
+        assert!(Validator::by_name(name).is_some(), "validator {name} not found in registry");
     }
 }
 

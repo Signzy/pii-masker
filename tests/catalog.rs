@@ -30,12 +30,14 @@ fn min_vector_counts() {
         assert!(
             r.examples.len() >= 3,
             "recognizer {} has only {} examples (need ≥3)",
-            r.entity, r.examples.len()
+            r.entity,
+            r.examples.len()
         );
         assert!(
             r.counter_examples.len() >= 3,
             "recognizer {} has only {} counter_examples (need ≥3)",
-            r.entity, r.counter_examples.len()
+            r.entity,
+            r.counter_examples.len()
         );
     }
 }

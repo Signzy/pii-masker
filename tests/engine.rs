@@ -12,10 +12,6 @@ fn us_engine() -> Engine {
     EngineBuilder::default().countries(["US"]).build().expect("US engine")
 }
 
-fn all_engine() -> Engine {
-    EngineBuilder::default().all_countries().build().expect("all engine")
-}
-
 // ── Basic detection ──────────────────────────────────────────────────────────
 
 #[test]
@@ -76,7 +72,8 @@ fn credit_card_wins_over_phone_overlap() {
             assert!(
                 findings[i].end <= findings[j].start,
                 "overlapping findings detected: {:?} and {:?}",
-                findings[i], findings[j]
+                findings[i],
+                findings[j]
             );
         }
     }
@@ -103,14 +100,6 @@ fn mask_redact_ip() {
 
 #[test]
 fn mask_hash_strategy() {
-    let engine = EngineBuilder::default()
-        .all_countries()
-        .build()
-        .expect("engine");
-    // Use a custom engine with hash mask for email
-    let opts = MaskOptions::default();
-    let _ = opts; // just ensure it compiles; real hash test below
-
     // Direct strategy test via apply_mask
     use pii_masker::mask::apply_mask;
     let policy = MaskPolicy::Hash { label: "TEST".to_string() };
@@ -139,10 +128,7 @@ fn no_pii_returns_borrowed() {
     let e = global_engine();
     let text = "nothing here to mask";
     let result = e.mask(text);
-    assert!(
-        matches!(result, Cow::Borrowed(_)),
-        "clean text must return Cow::Borrowed"
-    );
+    assert!(matches!(result, Cow::Borrowed(_)), "clean text must return Cow::Borrowed");
 }
 
 // ── Idempotence ──────────────────────────────────────────────────────────────
@@ -194,10 +180,7 @@ fn us_ssn_absent_in_global() {
 
 #[test]
 fn disable_entity() {
-    let e = EngineBuilder::default()
-        .disable_entities(["CREDIT_CARD"])
-        .build()
-        .expect("engine");
+    let e = EngineBuilder::default().disable_entities(["CREDIT_CARD"]).build().expect("engine");
     let findings = e.analyze("card 4111111111111111 here");
     assert!(!findings.iter().any(|f| f.entity == "CREDIT_CARD"));
 }

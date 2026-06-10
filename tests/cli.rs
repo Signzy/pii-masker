@@ -4,7 +4,13 @@ use assert_cmd::Command;
 use predicates::prelude::PredicateBooleanExt;
 
 fn pii_masker() -> Command {
-    Command::cargo_bin("pii-masker").unwrap()
+    // Run in a clean temp dir so the repo's pii-masker.json (which enables
+    // country packs) never leaks into "global-only" expectations.
+    let dir = std::env::temp_dir().join(format!("pii-masker-cli-test-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let mut cmd = Command::cargo_bin("pii-masker").unwrap();
+    cmd.current_dir(&dir);
+    cmd
 }
 
 // ── mask subcommand ───────────────────────────────────────────────────────────
@@ -55,12 +61,15 @@ fn mask_with_country_flag() {
 
 #[test]
 fn mask_ssn_absent_without_country() {
+    // Without the US pack, the US_SSN recognizer must not fire. (A loose global
+    // PHONE_NUMBER match may still mask the digits, so we assert the SSN entity
+    // label specifically does not appear rather than the raw value surviving.)
     pii_masker()
         .args(["mask"])
         .write_stdin("ssn 219-09-9999 here\n")
         .assert()
         .success()
-        .stdout(predicates::str::contains("219-09-9999")); // not masked
+        .stdout(predicates::str::contains("[US_SSN]").not());
 }
 
 // ── scan subcommand ───────────────────────────────────────────────────────────
@@ -76,13 +85,10 @@ fn scan_json_finds_credit_card() {
         .stdout
         .clone();
     let s = String::from_utf8(output).unwrap();
-    let arr: serde_json::Value = serde_json::from_str(&s).expect("scan --json must produce valid JSON");
-    let entities: Vec<&str> = arr
-        .as_array()
-        .unwrap()
-        .iter()
-        .filter_map(|v| v["entity"].as_str())
-        .collect();
+    let arr: serde_json::Value =
+        serde_json::from_str(&s).expect("scan --json must produce valid JSON");
+    let entities: Vec<&str> =
+        arr.as_array().unwrap().iter().filter_map(|v| v["entity"].as_str()).collect();
     assert!(entities.contains(&"CREDIT_CARD"), "must find CREDIT_CARD: {s}");
 }
 
@@ -93,29 +99,20 @@ fn scan_no_findings_exits_zero() {
         .write_stdin("nothing to see here\n")
         .assert()
         .success()
-        .stdout("[\n]\n"); // empty JSON array
+        .stdout("[]\n"); // serde_json pretty-prints an empty array as "[]"
 }
 
 // ── list subcommand ───────────────────────────────────────────────────────────
 
 #[test]
 fn list_shows_credit_card() {
-    pii_masker()
-        .args(["list"])
-        .assert()
-        .success()
-        .stdout(predicates::str::contains("CREDIT_CARD"));
+    pii_masker().args(["list"]).assert().success().stdout(predicates::str::contains("CREDIT_CARD"));
 }
 
 #[test]
 fn list_json_is_array() {
-    let output = pii_masker()
-        .args(["list", "--json"])
-        .assert()
-        .success()
-        .get_output()
-        .stdout
-        .clone();
+    let output =
+        pii_masker().args(["list", "--json"]).assert().success().get_output().stdout.clone();
     let s = String::from_utf8(output).unwrap();
     let arr: serde_json::Value = serde_json::from_str(&s).expect("list --json must be valid JSON");
     assert!(arr.is_array());

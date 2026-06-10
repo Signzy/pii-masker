@@ -2,29 +2,28 @@
 
 use std::fs;
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use pii_masker::{
     config::{DaemonConfig, Job, JobFiles},
-    daemon,
-    Engine,
+    daemon, Engine,
 };
 
 fn make_engine() -> Engine {
     Engine::builder().build().expect("engine")
 }
 
-fn daemon_cfg(tmp: &PathBuf, max_lines: usize) -> DaemonConfig {
+fn daemon_cfg(tmp: &Path, max_lines: usize) -> DaemonConfig {
     DaemonConfig {
         beat_interval: 0,
-        tmp_directory: tmp.clone(),
+        tmp_directory: tmp.to_path_buf(),
         max_lines_in_one_go: max_lines,
         run_mode: None,
         jobs: Vec::new(),
     }
 }
 
-fn write_input(dir: &PathBuf, name: &str, lines: &[&str]) -> PathBuf {
+fn write_input(dir: &Path, name: &str, lines: &[&str]) -> PathBuf {
     let path = dir.join(name);
     let mut f = fs::File::create(&path).unwrap();
     for l in lines {
@@ -91,11 +90,8 @@ fn processes_up_to_max_and_checkpoints() {
 fn resumes_from_checkpoint_and_appends() {
     let dir = tempfile::tempdir().unwrap();
     let tmp = dir.path().to_path_buf();
-    let input = write_input(
-        &tmp,
-        "resume.log",
-        &["line1", "line2", "line3 ip 10.0.0.2", "line4", "line5"],
-    );
+    let input =
+        write_input(&tmp, "resume.log", &["line1", "line2", "line3 ip 10.0.0.2", "line4", "line5"]);
     let output = tmp.join("resume_out.log");
     let engine = make_engine();
     let cfg = daemon_cfg(&tmp, 2);
@@ -157,10 +153,7 @@ fn missing_input_file_logs_and_continues() {
     let cfg = daemon_cfg(&tmp, 5);
     let job = Job {
         job_name: "missing".to_string(),
-        files: JobFiles {
-            input: tmp.join("does_not_exist.log"),
-            output: tmp.join("out.log"),
-        },
+        files: JobFiles { input: tmp.join("does_not_exist.log"), output: tmp.join("out.log") },
     };
     // Should not panic — error is logged
     daemon::run_once(&engine, &DaemonConfig { jobs: vec![job], ..cfg });
