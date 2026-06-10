@@ -5,7 +5,7 @@ use std::borrow::Cow;
 use crate::{
     catalog,
     error::Result,
-    finding::{Finding, resolve_overlaps},
+    finding::{resolve_overlaps, Finding},
     mask::{apply_mask, MaskOptions},
     recognizer::{RawRecognizer, Recognizer},
 };
@@ -129,14 +129,20 @@ impl EngineBuilder {
 
     /// Disable specific entity types even if their country pack is active.
     #[must_use]
-    pub fn disable_entities(mut self, entities: impl IntoIterator<Item = impl Into<String>>) -> Self {
+    pub fn disable_entities(
+        mut self,
+        entities: impl IntoIterator<Item = impl Into<String>>,
+    ) -> Self {
         self.disable_entities.extend(entities.into_iter().map(Into::into));
         self
     }
 
     /// Force-enable specific entity types even if they would otherwise be excluded.
     #[must_use]
-    pub fn enable_entities(mut self, entities: impl IntoIterator<Item = impl Into<String>>) -> Self {
+    pub fn enable_entities(
+        mut self,
+        entities: impl IntoIterator<Item = impl Into<String>>,
+    ) -> Self {
         self.enable_entities.extend(entities.into_iter().map(Into::into));
         self
     }
@@ -182,7 +188,7 @@ impl EngineBuilder {
                             .as_deref()
                             .map(|c| codes.contains(&c.to_ascii_uppercase()))
                             .unwrap_or(false)
-                }
+                },
             }
         });
 
@@ -191,21 +197,13 @@ impl EngineBuilder {
             catalog_recs.push(Recognizer::compile(raw)?);
         }
 
-        let patterns: Vec<String> = catalog_recs
-            .iter()
-            .map(|r| r.regex.as_str().to_string())
-            .collect();
-        let set = regex::RegexSet::new(&patterns).map_err(|source| {
-            crate::error::Error::Regex {
-                entity: "RegexSet".to_string(),
-                source,
-            }
+        let patterns: Vec<String> =
+            catalog_recs.iter().map(|r| r.regex.as_str().to_string()).collect();
+        let set = regex::RegexSet::new(&patterns).map_err(|source| crate::error::Error::Regex {
+            entity: "RegexSet".to_string(),
+            source,
         })?;
 
-        Ok(Engine {
-            recognizers: catalog_recs,
-            set,
-            opts: self.opts,
-        })
+        Ok(Engine { recognizers: catalog_recs, set, opts: self.opts })
     }
 }

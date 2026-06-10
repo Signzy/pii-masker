@@ -17,15 +17,17 @@ pub fn run_once(engine: &Engine, cfg: &DaemonConfig) {
             Ok(stats) if stats.processed > 0 => {
                 log::info!(
                     "[{}] processed {} lines in {}ms",
-                    j.job_name, stats.processed, stats.elapsed_ms
+                    j.job_name,
+                    stats.processed,
+                    stats.elapsed_ms
                 );
-            }
+            },
             Ok(_) => {
                 log::debug!("[{}] nothing new", j.job_name);
-            }
+            },
             Err(e) => {
                 log::error!("[{}] error: {e}", j.job_name);
-            }
+            },
         }
     }
 }

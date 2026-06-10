@@ -193,10 +193,7 @@ impl Validator {
 
 /// Extract ASCII decimal digits from `m`.
 fn digits(m: &str) -> Vec<u8> {
-    m.bytes()
-        .filter(|b| b.is_ascii_digit())
-        .map(|b| b - b'0')
-        .collect()
+    m.bytes().filter(|b| b.is_ascii_digit()).map(|b| b - b'0').collect()
 }
 
 // ── Core validators ───────────────────────────────────────────────────────────
@@ -207,14 +204,23 @@ fn luhn(m: &str) -> bool {
     if d.is_empty() {
         return false;
     }
-    let sum: u32 = d.iter().rev().enumerate().map(|(i, &x)| {
-        if i % 2 == 1 {
-            let v = u32::from(x) * 2;
-            if v > 9 { v - 9 } else { v }
-        } else {
-            u32::from(x)
-        }
-    }).sum();
+    let sum: u32 = d
+        .iter()
+        .rev()
+        .enumerate()
+        .map(|(i, &x)| {
+            if i % 2 == 1 {
+                let v = u32::from(x) * 2;
+                if v > 9 {
+                    v - 9
+                } else {
+                    v
+                }
+            } else {
+                u32::from(x)
+            }
+        })
+        .sum();
     sum % 10 == 0
 }
 
@@ -225,20 +231,30 @@ fn luhn_card(m: &str) -> bool {
     if !(12..=19).contains(&n) {
         return false;
     }
-    let sum: u32 = d.iter().rev().enumerate().map(|(i, &x)| {
-        if i % 2 == 1 {
-            let v = u32::from(x) * 2;
-            if v > 9 { v - 9 } else { v }
-        } else {
-            u32::from(x)
-        }
-    }).sum();
+    let sum: u32 = d
+        .iter()
+        .rev()
+        .enumerate()
+        .map(|(i, &x)| {
+            if i % 2 == 1 {
+                let v = u32::from(x) * 2;
+                if v > 9 {
+                    v - 9
+                } else {
+                    v
+                }
+            } else {
+                u32::from(x)
+            }
+        })
+        .sum();
     sum % 10 == 0
 }
 
 /// IBAN mod-97 validation.
 fn iban(m: &str) -> bool {
-    let s: String = m.chars().filter(|c| !c.is_whitespace()).collect::<String>().to_ascii_uppercase();
+    let s: String =
+        m.chars().filter(|c| !c.is_whitespace()).collect::<String>().to_ascii_uppercase();
     let len = s.len();
     if !(15..=34).contains(&len) {
         return false;
@@ -253,15 +269,18 @@ fn iban(m: &str) -> bool {
     // Rearrange: body + first-4
     let rearranged: String = s[4..].chars().chain(s[..4].chars()).collect();
     // Convert to numeric string
-    let numeric: String = rearranged.chars().flat_map(|c| {
-        if c.is_ascii_alphabetic() {
-            let v = u32::from(c) - u32::from('A') + 10;
-            v.to_string().into_bytes()
-        } else {
-            vec![c as u8]
-        }
-    }).map(char::from)
-    .collect();
+    let numeric: String = rearranged
+        .chars()
+        .flat_map(|c| {
+            if c.is_ascii_alphabetic() {
+                let v = u32::from(c) - u32::from('A') + 10;
+                v.to_string().into_bytes()
+            } else {
+                vec![c as u8]
+            }
+        })
+        .map(char::from)
+        .collect();
     // Compute mod 97 digit-by-digit
     let mut rem: u32 = 0;
     for c in numeric.chars() {
@@ -332,17 +351,16 @@ fn us_ssn(m: &str) -> bool {
     }
     let area = u32::from(d[0]) * 100 + u32::from(d[1]) * 10 + u32::from(d[2]);
     let group = u32::from(d[3]) * 10 + u32::from(d[4]);
-    let serial = u32::from(d[5]) * 1000
-        + u32::from(d[6]) * 100
-        + u32::from(d[7]) * 10
-        + u32::from(d[8]);
+    let serial =
+        u32::from(d[5]) * 1000 + u32::from(d[6]) * 100 + u32::from(d[7]) * 10 + u32::from(d[8]);
     area != 0 && area != 666 && area < 900 && group != 0 && serial != 0
 }
 
 /// Spanish NIF: 8 digits + control letter.
 fn es_nif(m: &str) -> bool {
     const TABLE: &[u8] = b"TRWAGMYFPDXBNJZSQVHLCKE";
-    let s: String = m.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>().to_ascii_uppercase();
+    let s: String =
+        m.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>().to_ascii_uppercase();
     if s.len() != 9 {
         return false;
     }
@@ -357,7 +375,8 @@ fn es_nif(m: &str) -> bool {
 
 /// Spanish NIE: X/Y/Z prefix + 7 digits + control letter.
 fn es_nie(m: &str) -> bool {
-    let s: String = m.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>().to_ascii_uppercase();
+    let s: String =
+        m.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>().to_ascii_uppercase();
     if s.len() != 9 {
         return false;
     }
@@ -373,7 +392,8 @@ fn es_nie(m: &str) -> bool {
 
 /// Italian Codice Fiscale (16-char alphanumeric).
 fn it_fiscal(m: &str) -> bool {
-    let s: String = m.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>().to_ascii_uppercase();
+    let s: String =
+        m.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>().to_ascii_uppercase();
     if s.len() != 16 {
         return false;
     }
@@ -476,7 +496,7 @@ fn au_tfn(m: &str) -> bool {
             let mut v = vec![0u8];
             v.extend_from_slice(&d);
             v
-        }
+        },
         9 => d,
         _ => return false,
     };
@@ -501,11 +521,7 @@ fn sg_nric(m: &str) -> bool {
         return false;
     }
     const WEIGHTS: [u32; 7] = [2, 7, 6, 5, 4, 3, 2];
-    let sum: u32 = s[1..8]
-        .bytes()
-        .zip(WEIGHTS.iter())
-        .map(|(c, &w)| u32::from(c - b'0') * w)
-        .sum();
+    let sum: u32 = s[1..8].bytes().zip(WEIGHTS.iter()).map(|(c, &w)| u32::from(c - b'0') * w).sum();
     let (offset, table): (u32, &[u8]) = match prefix {
         'S' => (0, b"JZIHGFEDCBA"),
         'T' => (4, b"JZIHGFEDCBA"),
@@ -543,11 +559,8 @@ fn gstin(m: &str) -> bool {
         total += product / 36 + product % 36;
     }
     let check_val = (36 - (total % 36)) % 36;
-    let expected = if check_val < 10 {
-        b'0' + check_val as u8
-    } else {
-        b'A' + (check_val - 10) as u8
-    };
+    let expected =
+        if check_val < 10 { b'0' + check_val as u8 } else { b'A' + (check_val - 10) as u8 };
     b[14] == expected
 }
 
@@ -602,9 +615,7 @@ fn phone_loose(m: &str) -> bool {
 /// Phone strict: delegate to the `phonenumber` crate when `phone` feature is enabled.
 #[cfg(feature = "phone")]
 fn phone_loose(m: &str) -> bool {
-    phonenumber::parse(None, m)
-        .map(|p| phonenumber::is_valid(&p))
-        .unwrap_or(false)
+    phonenumber::parse(None, m).map(|p| phonenumber::is_valid(&p)).unwrap_or(false)
 }
 
 // ── Phase 4 validators ─────────────────────────────────────────────────────────
@@ -654,12 +665,9 @@ fn nl_bsn(m: &str) -> bool {
         return false;
     }
     // weights: 9,8,7,6,5,4,3,2,-1
-    let sum: i32 = d[..8]
-        .iter()
-        .enumerate()
-        .map(|(i, &x)| i32::from(x) * (9 - i as i32))
-        .sum::<i32>()
-        - i32::from(d[8]);
+    let sum: i32 =
+        d[..8].iter().enumerate().map(|(i, &x)| i32::from(x) * (9 - i as i32)).sum::<i32>()
+            - i32::from(d[8]);
     sum != 0 && sum % 11 == 0
 }
 
@@ -688,14 +696,24 @@ fn br_cpf(m: &str) -> bool {
         return false;
     }
     let check1 = |d: &[u8]| -> u8 {
-        let sum: u32 = d[..9].iter().enumerate().map(|(i, &x)| u32::from(x) * (10 - i as u32)).sum();
+        let sum: u32 =
+            d[..9].iter().enumerate().map(|(i, &x)| u32::from(x) * (10 - i as u32)).sum();
         let rem = sum % 11;
-        if rem < 2 { 0 } else { (11 - rem) as u8 }
+        if rem < 2 {
+            0
+        } else {
+            (11 - rem) as u8
+        }
     };
     let check2 = |d: &[u8]| -> u8 {
-        let sum: u32 = d[..10].iter().enumerate().map(|(i, &x)| u32::from(x) * (11 - i as u32)).sum();
+        let sum: u32 =
+            d[..10].iter().enumerate().map(|(i, &x)| u32::from(x) * (11 - i as u32)).sum();
         let rem = sum % 11;
-        if rem < 2 { 0 } else { (11 - rem) as u8 }
+        if rem < 2 {
+            0
+        } else {
+            (11 - rem) as u8
+        }
     };
     d[9] == check1(&d) && d[10] == check2(&d)
 }
@@ -714,7 +732,11 @@ fn br_cnpj(m: &str) -> bool {
     let check = |slice: &[u8], weights: &[u32]| -> u8 {
         let sum: u32 = slice.iter().zip(weights.iter()).map(|(&x, &w)| u32::from(x) * w).sum();
         let rem = sum % 11;
-        if rem < 2 { 0 } else { (11 - rem) as u8 }
+        if rem < 2 {
+            0
+        } else {
+            (11 - rem) as u8
+        }
     };
     d[12] == check(&d[..12], &w1) && d[13] == check(&d[..13], &w2)
 }
@@ -726,9 +748,7 @@ fn mx_curp(m: &str) -> bool {
         return false;
     }
     const CHARSET: &[u8] = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let val_of = |c: u8| -> Option<u32> {
-        CHARSET.iter().position(|&x| x == c).map(|p| p as u32)
-    };
+    let val_of = |c: u8| -> Option<u32> { CHARSET.iter().position(|&x| x == c).map(|p| p as u32) };
     let b = s.as_bytes();
     let mut sum: u32 = 0;
     for (i, &c) in b[..17].iter().enumerate() {
@@ -788,17 +808,14 @@ fn ie_pps(m: &str) -> bool {
         return false;
     }
     const WEIGHTS: [u32; 8] = [8, 7, 6, 5, 4, 3, 2, 9];
-    let sum: u32 = b[..7]
-        .iter()
-        .zip(WEIGHTS.iter())
-        .map(|(&c, &w)| u32::from(c - b'0') * w)
-        .sum::<u32>()
-        + if b.len() == 9 {
-            // second letter contributes at weight 9 only for 9-char forms
-            u32::from(b[8] - b'A' + 1) * 9
-        } else {
-            0
-        };
+    let sum: u32 =
+        b[..7].iter().zip(WEIGHTS.iter()).map(|(&c, &w)| u32::from(c - b'0') * w).sum::<u32>()
+            + if b.len() == 9 {
+                // second letter contributes at weight 9 only for 9-char forms
+                u32::from(b[8] - b'A' + 1) * 9
+            } else {
+                0
+            };
     let check = (sum % 23) as u8;
     b[7] == check + b'A'
 }
@@ -828,7 +845,7 @@ fn tr_tckn(m: &str) -> bool {
     // d[9] = (7 * sum(d[0..7:2]) - sum(d[1..7:2])) % 10
     let odd_sum: u32 = d[0..=8].iter().step_by(2).map(|&x| u32::from(x)).sum(); // d0+d2+d4+d6+d8
     let even_sum: u32 = d[1..=8].iter().step_by(2).map(|&x| u32::from(x)).sum(); // d1+d3+d5+d7
-    // digit 10 check
+                                                                                 // digit 10 check
     let check10 = (odd_sum * 7).wrapping_sub(even_sum) % 10;
     if check10 != u32::from(d[9]) {
         return false;
@@ -854,11 +871,7 @@ fn cn_ric(m: &str) -> bool {
     }
     const WEIGHTS: [u32; 17] = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
     const CHECKS: &[u8] = b"10X98765432";
-    let sum: u32 = b[..17]
-        .iter()
-        .zip(WEIGHTS.iter())
-        .map(|(&c, &w)| u32::from(c - b'0') * w)
-        .sum();
+    let sum: u32 = b[..17].iter().zip(WEIGHTS.iter()).map(|(&c, &w)| u32::from(c - b'0') * w).sum();
     let expected = CHECKS[(sum % 11) as usize];
     b[17] == expected
 }
@@ -889,21 +902,13 @@ fn cl_run(m: &str) -> bool {
         return false;
     }
     // Body: all digits before the check char (ignore dashes and dots)
-    let body: Vec<u8> = bytes[..bytes.len() - 1]
-        .iter()
-        .filter(|c| c.is_ascii_digit())
-        .map(|&c| c - b'0')
-        .collect();
+    let body: Vec<u8> =
+        bytes[..bytes.len() - 1].iter().filter(|c| c.is_ascii_digit()).map(|&c| c - b'0').collect();
     if body.is_empty() {
         return false;
     }
     const CYCLE: [u32; 6] = [2, 3, 4, 5, 6, 7];
-    let sum: u32 = body
-        .iter()
-        .rev()
-        .enumerate()
-        .map(|(i, &x)| u32::from(x) * CYCLE[i % 6])
-        .sum();
+    let sum: u32 = body.iter().rev().enumerate().map(|(i, &x)| u32::from(x) * CYCLE[i % 6]).sum();
     let check = 11 - (sum % 11);
     let expected = match check {
         11 => b'0',
@@ -934,14 +939,18 @@ fn ru_inn(m: &str) -> bool {
             const W: [u32; 9] = [2, 4, 10, 3, 5, 9, 4, 6, 8];
             let sum: u32 = d[..9].iter().zip(W.iter()).map(|(&x, &w)| u32::from(x) * w).sum();
             (sum % 11) % 10 == u32::from(d[9])
-        }
+        },
         12 => {
             const W1: [u32; 10] = [7, 2, 4, 10, 3, 5, 9, 4, 6, 8];
             const W2: [u32; 11] = [3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8];
-            let c1 = (d[..10].iter().zip(W1.iter()).map(|(&x, &w)| u32::from(x) * w).sum::<u32>() % 11) % 10;
-            let c2 = (d[..11].iter().zip(W2.iter()).map(|(&x, &w)| u32::from(x) * w).sum::<u32>() % 11) % 10;
+            let c1 = (d[..10].iter().zip(W1.iter()).map(|(&x, &w)| u32::from(x) * w).sum::<u32>()
+                % 11)
+                % 10;
+            let c2 = (d[..11].iter().zip(W2.iter()).map(|(&x, &w)| u32::from(x) * w).sum::<u32>()
+                % 11)
+                % 10;
             c1 == u32::from(d[10]) && c2 == u32::from(d[11])
-        }
+        },
         _ => false,
     }
 }

@@ -61,14 +61,7 @@ mod tests {
     use super::*;
 
     fn f(entity: &str, start: usize, end: usize, score: f32) -> Finding {
-        Finding {
-            entity: entity.to_string(),
-            country: None,
-            start,
-            end,
-            score,
-            recognizer_idx: 0,
-        }
+        Finding { entity: entity.to_string(), country: None, start, end, score, recognizer_idx: 0 }
     }
 
     #[test]

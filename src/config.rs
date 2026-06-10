@@ -156,14 +156,10 @@ impl DaemonConfig {
 /// # Errors
 /// Returns [`Error::Read`] on I/O failure or [`Error::Parse`] on JSON parse failure.
 pub fn load(path: &Path) -> Result<Config> {
-    let content = std::fs::read_to_string(path).map_err(|source| Error::Read {
-        path: path.display().to_string(),
-        source,
-    })?;
-    serde_json::from_str(&content).map_err(|source| Error::Parse {
-        path: path.display().to_string(),
-        source,
-    })
+    let content = std::fs::read_to_string(path)
+        .map_err(|source| Error::Read { path: path.display().to_string(), source })?;
+    serde_json::from_str(&content)
+        .map_err(|source| Error::Parse { path: path.display().to_string(), source })
 }
 
 /// Load config from `path`, falling back to `pii-masker.json`, then built-in defaults.

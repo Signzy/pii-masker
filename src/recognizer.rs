@@ -100,17 +100,14 @@ impl Recognizer {
     /// Returns [`Error::Catalog`] for unknown validator or mask kind, or
     /// [`Error::Regex`] if the pattern fails to compile.
     pub fn compile(raw: &RawRecognizer) -> Result<Self> {
-        let validator =
-            Validator::by_name(&raw.validator).ok_or_else(|| {
-                Error::Catalog(format!(
-                    "unknown validator {:?} for entity {}",
-                    raw.validator, raw.entity
-                ))
-            })?;
-        let regex = regex::Regex::new(&raw.regex).map_err(|source| Error::Regex {
-            entity: raw.entity.clone(),
-            source,
+        let validator = Validator::by_name(&raw.validator).ok_or_else(|| {
+            Error::Catalog(format!(
+                "unknown validator {:?} for entity {}",
+                raw.validator, raw.entity
+            ))
         })?;
+        let regex = regex::Regex::new(&raw.regex)
+            .map_err(|source| Error::Regex { entity: raw.entity.clone(), source })?;
         let label = raw.mask.label.clone().unwrap_or_else(|| raw.entity.clone());
         let mask = match raw.mask.kind.as_str() {
             "partial" => MaskPolicy::Partial {
@@ -125,7 +122,7 @@ impl Recognizer {
                     "unknown mask kind {:?} for entity {}",
                     other, raw.entity
                 )))
-            }
+            },
         };
         Ok(Self {
             entity: raw.entity.clone(),

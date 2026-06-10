@@ -29,21 +29,13 @@ fn main() -> anyhow::Result<()> {
     let cfg = config::load_or_default(cli.config.as_deref());
 
     // Build engine, applying CLI country selection over config's selection.
-    let build_engine = |country: Option<&str>,
-                        all: bool|
-     -> anyhow::Result<pii_masker::Engine> {
+    let build_engine = |country: Option<&str>, all: bool| -> anyhow::Result<pii_masker::Engine> {
         if all {
-            EngineBuilder::default()
-                .all_countries()
-                .build()
-                .map_err(|e| anyhow::anyhow!("{e}"))
+            EngineBuilder::default().all_countries().build().map_err(|e| anyhow::anyhow!("{e}"))
         } else if let Some(codes) = country {
             let list: Vec<String> =
                 codes.split(',').map(|s| s.trim().to_ascii_uppercase()).collect();
-            EngineBuilder::default()
-                .countries(list)
-                .build()
-                .map_err(|e| anyhow::anyhow!("{e}"))
+            EngineBuilder::default().countries(list).build().map_err(|e| anyhow::anyhow!("{e}"))
         } else {
             cfg.engine.build_engine().map_err(|e| anyhow::anyhow!("{e}"))
         }
@@ -66,7 +58,7 @@ fn main() -> anyhow::Result<()> {
                 let masked = engine.mask(&line);
                 writeln!(writer, "{masked}")?;
             }
-        }
+        },
 
         Cmd::Scan { input, json, country, all_countries } => {
             let engine = build_engine(country.as_deref(), all_countries)?;
@@ -102,12 +94,12 @@ fn main() -> anyhow::Result<()> {
             if json {
                 println!("{}", serde_json::to_string_pretty(&all_findings)?);
             }
-        }
+        },
 
         Cmd::Run { once } => {
             let engine = cfg.engine.build_engine().map_err(|e| anyhow::anyhow!("{e}"))?;
             daemon::run_loop(&engine, &cfg.daemon, once);
-        }
+        },
 
         Cmd::List { country, all_countries, json } => {
             let engine = build_engine(country.as_deref(), all_countries)?;
@@ -131,10 +123,7 @@ fn main() -> anyhow::Result<()> {
                     .collect();
                 println!("{}", serde_json::to_string_pretty(&arr)?);
             } else {
-                println!(
-                    "{:<25} {:<5} {:<12} {:>5}  {}",
-                    "ENTITY", "CC", "CHECKSUM", "SCORE", "MASK"
-                );
+                println!("{:<25} {:<5} {:<12} {:>5}  MASK", "ENTITY", "CC", "CHECKSUM", "SCORE");
                 for r in engine.recognizers() {
                     let mask_kind = match &r.mask {
                         MaskPolicy::Partial { .. } => "partial",
@@ -151,7 +140,7 @@ fn main() -> anyhow::Result<()> {
                     );
                 }
             }
-        }
+        },
     }
 
     Ok(())
